@@ -36,6 +36,10 @@ class UpdateEmployeeRequest extends FormRequest
             'email' => ['sometimes', 'email', Rule::unique('employees', 'email')->ignore($employee)],
             'password' => ['sometimes', Password::defaults()],
             'is_active' => ['sometimes', 'boolean'],
+            'office_id' => ['nullable', 'integer', 'exists:offices,id'],
+            'position' => ['sometimes', 'string', 'max:255'],
+            'date_employed' => ['nullable', 'date'],
+            'date_terminated' => ['nullable', 'date', 'after_or_equal:date_employed'],
         ];
     }
 }

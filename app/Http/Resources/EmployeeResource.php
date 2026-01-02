@@ -30,6 +30,10 @@ class EmployeeResource extends JsonResource
             'nationality' => $this->nationality,
             'email' => $this->email,
             'is_active' => $this->is_active,
+            'office' => $this->whenLoaded('office', fn () => new OfficeResource($this->office)),
+            'position' => $this->position,
+            'date_employed' => $this->date_employed?->format('Y-m-d'),
+            'date_terminated' => $this->date_terminated?->format('Y-m-d'),
             'applications' => $this->whenLoaded('applications', fn () => $this->applications->map(fn ($app) => [
                 'uuid' => $app->uuid,
                 'name' => $app->name,

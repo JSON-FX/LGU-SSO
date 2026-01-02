@@ -49,6 +49,14 @@ Content-Type: application/json
     "province": { "code": "0300000000", "name": "Central Luzon" },
     "city": { "code": "0306900000", "name": "San Fernando" },
     "barangay": { "code": "0306901001", "name": "Alasas" },
+    "office": {
+      "id": 1,
+      "name": "Municipal Budget Office",
+      "abbreviation": "MBO"
+    },
+    "position": "Budget Analyst",
+    "date_employed": "2020-03-15",
+    "date_terminated": null,
     "created_at": "2024-01-15T08:30:00+00:00",
     "updated_at": "2024-06-20T14:45:00+00:00"
   }
@@ -186,6 +194,14 @@ Authorization: Bearer {jwt_token}
     "province": { "code": "0300000000", "name": "Central Luzon" },
     "city": { "code": "0306900000", "name": "San Fernando" },
     "barangay": { "code": "0306901001", "name": "Alasas" },
+    "office": {
+      "id": 1,
+      "name": "Municipal Budget Office",
+      "abbreviation": "MBO"
+    },
+    "position": "Budget Analyst",
+    "date_employed": "2020-03-15",
+    "date_terminated": null,
     "applications": [
       {
         "uuid": "app-uuid-1",
@@ -470,19 +486,38 @@ Content-Type: application/json
   "residence": "456 Second Street",
   "nationality": "Filipino",
   "email": "maria@lgu.gov.ph",
-  "password": "securepassword123"
+  "password": "securepassword123",
+  "office_id": 1,
+  "position": "Budget Analyst",
+  "date_employed": "2024-01-15",
+  "date_terminated": null
 }
 ```
+
+**Required Fields:**
+- `first_name`, `last_name`, `birthday`, `civil_status`, `residence`, `nationality`, `email`, `password`, `position`
+
+**Optional Fields:**
+- `middle_name`, `suffix`, `province_code`, `city_code`, `barangay_code`, `block_number`, `building_floor`, `house_number`, `office_id`, `date_employed`, `date_terminated`
 
 **Response (201 Created):**
 ```json
 {
+  "message": "Employee created successfully.",
   "data": {
     "uuid": "new-employee-uuid",
     "first_name": "Maria",
     "last_name": "Garcia",
     "email": "maria@lgu.gov.ph",
-    "is_active": true
+    "is_active": true,
+    "position": "Budget Analyst",
+    "office": {
+      "id": 1,
+      "name": "Municipal Budget Office",
+      "abbreviation": "MBO"
+    },
+    "date_employed": "2024-01-15",
+    "date_terminated": null
   }
 }
 ```
@@ -511,7 +546,15 @@ Authorization: Bearer {jwt_token}
     "last_name": "Dela Cruz",
     "full_name": "Juan Santos Dela Cruz",
     "email": "juan@lgu.gov.ph",
-    "is_active": true
+    "is_active": true,
+    "office": {
+      "id": 1,
+      "name": "Municipal Budget Office",
+      "abbreviation": "MBO"
+    },
+    "position": "Budget Analyst",
+    "date_employed": "2020-03-15",
+    "date_terminated": null
   }
 }
 ```
@@ -532,7 +575,9 @@ Content-Type: application/json
 
 {
   "first_name": "Juan Carlos",
-  "civil_status": "married"
+  "civil_status": "married",
+  "office_id": 2,
+  "position": "Senior Budget Analyst"
 }
 ```
 

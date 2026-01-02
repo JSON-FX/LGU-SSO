@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\CivilStatus;
 use App\Models\Employee;
+use App\Models\Office;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -13,6 +14,8 @@ class EmployeeFactory extends Factory
 {
     public function definition(): array
     {
+        $dateEmployed = fake()->dateTimeBetween('-10 years', 'now');
+
         return [
             'first_name' => fake()->firstName(),
             'middle_name' => fake()->optional()->lastName(),
@@ -25,6 +28,10 @@ class EmployeeFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'password' => 'password',
             'is_active' => true,
+            'office_id' => Office::factory(),
+            'position' => fake()->jobTitle(),
+            'date_employed' => $dateEmployed,
+            'date_terminated' => null,
         ];
     }
 
@@ -32,6 +39,21 @@ class EmployeeFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_active' => false,
+        ]);
+    }
+
+    public function terminated(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+            'date_terminated' => fake()->dateTimeBetween($attributes['date_employed'] ?? '-1 year', 'now'),
+        ]);
+    }
+
+    public function forOffice(Office $office): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'office_id' => $office->id,
         ]);
     }
 }

@@ -32,11 +32,13 @@ it('can create an employee', function () {
             'nationality' => 'Filipino',
             'email' => 'john.doe@example.com',
             'password' => 'Password123!',
+            'position' => 'Software Developer',
         ]);
 
     $response->assertCreated()
         ->assertJsonPath('data.first_name', 'John')
-        ->assertJsonPath('data.email', 'john.doe@example.com');
+        ->assertJsonPath('data.email', 'john.doe@example.com')
+        ->assertJsonPath('data.position', 'Software Developer');
 });
 
 it('can show an employee', function () {

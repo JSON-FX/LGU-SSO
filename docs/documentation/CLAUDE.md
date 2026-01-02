@@ -187,6 +187,12 @@ Response (200):
 ## Employee Object Shape
 
 ```typescript
+interface Office {
+  id: number;
+  name: string;             // e.g., "Municipal Budget Office"
+  abbreviation: string;     // e.g., "MBO"
+}
+
 interface Employee {
   uuid: string;
   first_name: string;
@@ -208,6 +214,10 @@ interface Employee {
   province: { code: string; name: string } | null;
   city: { code: string; name: string } | null;
   barangay: { code: string; name: string } | null;
+  office: Office | null;    // Employee's assigned office
+  position: string;         // e.g., "Budget Analyst"
+  date_employed: string | null;    // Format: "YYYY-MM-DD"
+  date_terminated: string | null;  // Format: "YYYY-MM-DD"
   created_at: string;       // ISO 8601
   updated_at: string;       // ISO 8601
 }

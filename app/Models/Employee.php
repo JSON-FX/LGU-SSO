@@ -38,6 +38,10 @@ class Employee extends Authenticatable implements JWTSubject
         'email',
         'password',
         'is_active',
+        'office_id',
+        'position',
+        'date_employed',
+        'date_terminated',
     ];
 
     protected $hidden = [
@@ -51,6 +55,8 @@ class Employee extends Authenticatable implements JWTSubject
             'civil_status' => CivilStatus::class,
             'is_active' => 'boolean',
             'password' => 'hashed',
+            'date_employed' => 'date',
+            'date_terminated' => 'date',
         ];
     }
 
@@ -120,6 +126,11 @@ class Employee extends Authenticatable implements JWTSubject
     public function barangay(): BelongsTo
     {
         return $this->belongsTo(Barangay::class, 'barangay_code', 'code');
+    }
+
+    public function office(): BelongsTo
+    {
+        return $this->belongsTo(Office::class);
     }
 
     public function applications(): BelongsToMany

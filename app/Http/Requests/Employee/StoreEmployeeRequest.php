@@ -33,6 +33,10 @@ class StoreEmployeeRequest extends FormRequest
             'nationality' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'unique:employees,email'],
             'password' => ['required', Password::defaults()],
+            'office_id' => ['nullable', 'integer', 'exists:offices,id'],
+            'position' => ['required', 'string', 'max:255'],
+            'date_employed' => ['nullable', 'date'],
+            'date_terminated' => ['nullable', 'date', 'after_or_equal:date_employed'],
         ];
     }
 }
