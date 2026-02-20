@@ -1,59 +1,143 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# LGU-SSO
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Single Sign-On (SSO) API built with Laravel for Local Government Units (LGU). Provides centralized authentication, employee management, and OAuth-based application authorization.
 
-## About Laravel
+## Docker Deployment (Recommended)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+LGU-SSO runs as part of a multi-service Docker stack. The Docker Compose setup lives in the parent directory and includes:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Service | Domain | Description |
+|---------|--------|-------------|
+| **lgu-sso** | `sso.lguquezon.local` | This app (Laravel API) |
+| **lgu-sso-ui** | `sso-ui.lguquezon.local` | SSO frontend (Next.js) |
+| **lgu-chat** | `chat.lguquezon.local` | Chat app (Next.js + Socket.io) |
+| **nginx** | - | Reverse proxy (port 80) |
+| **dns** | - | dnsmasq server (port 53) |
+| **mysql** | - | MySQL 8.0 database |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Prerequisites
 
-## Learning Laravel
+- Docker and Docker Compose
+- Stop any local web server using port 80 (e.g., `valet stop`)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Quick Start
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+From the parent directory (`development/`):
 
-## Laravel Sponsors
+```bash
+# Build and start all services
+docker compose build
+docker compose up -d
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# Run migrations (first time only)
+docker exec lgu-sso php artisan migrate --force
 
-### Premium Partners
+# Seed the database (first time only)
+docker exec lgu-sso php artisan db:seed --force
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+The API will be available at `http://sso.lguquezon.local`.
 
-## Contributing
+### LAN Access (Other Devices)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+A dnsmasq container runs on port 53 and resolves all `*.lguquezon.local` domains to the host machine's LAN IP. To access from other devices on the network:
 
-## Code of Conduct
+1. Find the host machine's LAN IP (configured in `dns/dnsmasq.conf`)
+2. On the client device, set the DNS server to the host's LAN IP
+3. Visit `http://sso.lguquezon.local` -- no port number or `/etc/hosts` editing needed
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Environment Variables
 
-## Security Vulnerabilities
+Environment variables are defined in the parent `../.env` file and passed through `docker-compose.yml`. Key variables for lgu-sso:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Variable | Description |
+|----------|-------------|
+| `APP_URL` | Public URL for the SSO API |
+| `DB_HOST` | Database host (`mysql` in Docker) |
+| `DB_DATABASE` | Database name |
+| `DB_USERNAME` | Database user |
+| `DB_PASSWORD` | Database password |
+| `JWT_SECRET` | Secret key for JWT token signing |
 
-## License
+### Docker Image
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Dockerfile uses a multi-stage build:
+
+1. **Composer stage**: Installs PHP dependencies with optimized autoloader
+2. **Node stage**: Builds frontend assets with Vite
+3. **Runner stage**: PHP 8.4 CLI Alpine with required extensions (pdo_mysql, bcmath, mbstring, zip, intl, pcntl)
+
+The entrypoint script runs migrations automatically on container start.
+
+---
+
+## Local Development
+
+For standalone development without Docker:
+
+1. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
+
+2. **Install Node dependencies and build assets**
+   ```bash
+   npm install
+   npm run build
+   ```
+
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Run migrations and seeders**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
+
+5. **Start development server**
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## API Overview
+
+### Authentication
+- `POST /api/v1/auth/login` - User login
+- `POST /api/v1/auth/register` - User registration
+- `POST /api/v1/auth/logout` - User logout
+- `GET /api/v1/auth/me` - Get authenticated user
+
+### SSO / OAuth
+- `GET /api/v1/sso/authorize` - OAuth authorization
+- `POST /api/v1/sso/token` - Exchange code for token
+- `POST /api/v1/sso/validate-token` - Validate an access token
+
+### Employees
+- `GET /api/v1/employees` - List employees
+- `POST /api/v1/employees` - Create employee
+- `GET /api/v1/employees/{uuid}` - Get employee
+- `PUT /api/v1/employees/{uuid}` - Update employee
+
+### Applications
+- `GET /api/v1/applications` - List registered applications
+- `POST /api/v1/applications` - Register a new application
+
+## Architecture
+
+- **Framework**: Laravel 12
+- **PHP**: 8.4
+- **Database**: MySQL 8.0
+- **Authentication**: JWT tokens
+- **API Style**: RESTful with Eloquent API Resources
+
+---
+
+**LGU-SSO** - Developed by Management Information System Section (MISS)
+Municipality Of Quezon Bukidnon 8715 Philippines
+All Rights Reserved 2025
