@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('psgc_barangays', function (Blueprint $table) {
-            $table->string('code', 10)->primary();
-            $table->string('name');
-            $table->string('city_code', 10)->index();
-
-            $table->foreign('city_code')->references('code')->on('psgc_cities')->cascadeOnDelete();
+        Schema::table('employees', function (Blueprint $table) {
+            $table->string('region_code', 10)->nullable()->after('civil_status');
         });
     }
 
@@ -25,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('psgc_barangays');
+        Schema::table('employees', function (Blueprint $table) {
+            $table->dropForeign(['region_code']);
+            $table->dropColumn('region_code');
+        });
     }
 };

@@ -18,13 +18,14 @@ class EmployeeSeeder extends Seeder
             'last_name' => 'User',
             'birthday' => '1990-01-15',
             'civil_status' => CivilStatus::Single,
-            'province_code' => '1300000000',
-            'city_code' => '1303000000',
-            'barangay_code' => '1303001000',
+            'province' => 'Metro Manila',
+            'city' => 'Quezon City',
+            'barangay' => 'Barangay Holy Spirit',
             'residence' => '123 Admin Street',
             'nationality' => 'Filipino',
             'email' => 'admin@lgu-sso.test',
             'password' => 'password',
+            'position' => 'System Administrator',
         ]);
 
         $employee1 = Employee::create([
@@ -34,13 +35,14 @@ class EmployeeSeeder extends Seeder
             'suffix' => 'Jr.',
             'birthday' => '1985-06-20',
             'civil_status' => CivilStatus::Married,
-            'province_code' => '1300000000',
-            'city_code' => '1302000000',
-            'barangay_code' => '1302001000',
+            'province' => 'Metro Manila',
+            'city' => 'Manila',
+            'barangay' => 'Barangay 1',
             'residence' => '456 Sample Street',
             'nationality' => 'Filipino',
             'email' => 'juan@lgu-sso.test',
             'password' => 'password',
+            'position' => 'Clerk',
         ]);
 
         $employee2 = Employee::create([
@@ -49,13 +51,14 @@ class EmployeeSeeder extends Seeder
             'last_name' => 'Reyes',
             'birthday' => '1992-03-10',
             'civil_status' => CivilStatus::Single,
-            'province_code' => '0700000000',
-            'city_code' => '0701000000',
-            'barangay_code' => null,
+            'province' => 'Cebu',
+            'city' => 'Cebu City',
+            'barangay' => null,
             'residence' => '789 Cebu Street',
             'nationality' => 'Filipino',
             'email' => 'maria@lgu-sso.test',
             'password' => 'password',
+            'position' => 'Administrative Officer',
         ]);
 
         $applications = Application::all();

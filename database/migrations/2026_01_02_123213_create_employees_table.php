@@ -34,9 +34,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('province_code')->references('code')->on('psgc_provinces')->nullOnDelete();
-            $table->foreign('city_code')->references('code')->on('psgc_cities')->nullOnDelete();
-            $table->foreign('barangay_code')->references('code')->on('psgc_barangays')->nullOnDelete();
+            // FK constraints to PSGC tables removed — location codes stored as plain strings
+            // and resolved via PSGC API when displaying
         });
     }
 

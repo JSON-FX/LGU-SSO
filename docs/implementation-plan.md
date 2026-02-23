@@ -36,6 +36,7 @@ API-only SSO backend for managing employee authentication across multiple intern
 | suffix | string | Nullable |
 | birthday | date | Required |
 | civil_status | enum | single, married, widowed, separated, divorced |
+| region_code | string | FK to psgc_regions |
 | province_code | string | FK to psgc_provinces |
 | city_code | string | FK to psgc_cities |
 | barangay_code | string | FK to psgc_barangays |
@@ -102,12 +103,18 @@ API-only SSO backend for managing employee authentication across multiple intern
 | metadata | json | Additional context |
 | created_at | timestamp | |
 
+### psgc_regions
+| Column | Type | Notes |
+|--------|------|-------|
+| code | string | PK (PSGC code) |
+| name | string | Region name |
+
 ### psgc_provinces
 | Column | Type | Notes |
 |--------|------|-------|
 | code | string | PK (PSGC code) |
 | name | string | Province name |
-| region_code | string | Region identifier |
+| region_code | string | FK to psgc_regions |
 
 ### psgc_cities
 | Column | Type | Notes |
@@ -169,6 +176,8 @@ API-only SSO backend for managing employee authentication across multiple intern
 ### Locations `/api/v1/locations`
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| GET | /regions | List regions |
+| GET | /regions/{code}/provinces | Provinces in region |
 | GET | /provinces | List provinces |
 | GET | /provinces/{code}/cities | Cities in province |
 | GET | /cities/{code}/barangays | Barangays in city |

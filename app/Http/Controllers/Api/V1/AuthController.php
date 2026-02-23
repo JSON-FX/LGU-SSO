@@ -117,7 +117,7 @@ class AuthController extends Controller
     public function me(): JsonResponse
     {
         $employee = auth()->user();
-        $employee->load(['province', 'city', 'barangay', 'applications']);
+        $employee->load(['office', 'applications']);
 
         return response()->json([
             'data' => new EmployeeResource($employee),

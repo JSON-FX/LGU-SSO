@@ -7,10 +7,30 @@ use App\Http\Resources\LocationResource;
 use App\Models\Barangay;
 use App\Models\City;
 use App\Models\Province;
+use App\Models\Region;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class LocationController extends Controller
 {
+    public function regions(): AnonymousResourceCollection
+    {
+        $regions = Region::query()
+            ->orderBy('name')
+            ->get();
+
+        return LocationResource::collection($regions);
+    }
+
+    public function provincesByRegion(string $regionCode): AnonymousResourceCollection
+    {
+        $provinces = Province::query()
+            ->where('region_code', $regionCode)
+            ->orderBy('name')
+            ->get();
+
+        return LocationResource::collection($provinces);
+    }
+
     public function provinces(): AnonymousResourceCollection
     {
         $provinces = Province::query()

@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('psgc_provinces', function (Blueprint $table) {
-            $table->string('code', 10)->primary();
-            $table->string('name');
-            $table->string('region_code', 10)->index();
-        });
+        // No-op: FK constraints were never created (PSGC tables don't exist in this deployment)
+        // Location codes are stored as plain strings and resolved via PSGC API
     }
 
     /**
@@ -23,6 +20,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('psgc_provinces');
+        // Note: Reversing would require the PSGC tables to exist
+        // This is intentionally left empty as we're moving away from local PSGC tables
     }
 };

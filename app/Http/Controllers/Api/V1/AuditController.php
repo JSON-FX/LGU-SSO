@@ -22,6 +22,20 @@ class AuditController extends Controller
             $query->where('action', $request->action);
         }
 
+        if ($request->has('employee_uuid')) {
+            $employee = Employee::where('uuid', $request->employee_uuid)->first();
+            if ($employee) {
+                $query->where('employee_id', $employee->id);
+            }
+        }
+
+        if ($request->has('application_uuid')) {
+            $application = Application::where('uuid', $request->application_uuid)->first();
+            if ($application) {
+                $query->where('application_id', $application->id);
+            }
+        }
+
         if ($request->has('from')) {
             $query->where('created_at', '>=', $request->from);
         }
@@ -30,7 +44,9 @@ class AuditController extends Controller
             $query->where('created_at', '<=', $request->to);
         }
 
-        return AuditLogResource::collection($query->paginate(50));
+        $perPage = min($request->input('per_page', 15), 100);
+
+        return AuditLogResource::collection($query->paginate($perPage));
     }
 
     public function employeeLogs(Employee $employee): AnonymousResourceCollection

@@ -108,6 +108,39 @@ class SsoController extends Controller
         }
     }
 
+    public function validateRedirect(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'client_id' => ['required', 'string'],
+            'redirect_uri' => ['required', 'string', 'url'],
+        ]);
+
+        $application = Application::where('client_id', $validated['client_id'])
+            ->where('is_active', true)
+            ->first();
+
+        if (! $application) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Application not found or inactive.',
+            ], 404);
+        }
+
+        $allowedUris = $application->redirect_uris ?? [];
+
+        if (! in_array($validated['redirect_uri'], $allowedUris, true)) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Redirect URI is not allowed for this application.',
+            ], 403);
+        }
+
+        return response()->json([
+            'valid' => true,
+            'application_name' => $application->name,
+        ]);
+    }
+
     public function employee(Request $request): JsonResponse
     {
         $employee = auth()->user();

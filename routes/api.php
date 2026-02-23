@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\AuditController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\EmployeeController;
 use App\Http\Controllers\Api\V1\LocationController;
+use App\Http\Controllers\Api\V1\OfficeController;
 use App\Http\Controllers\Api\V1\SsoController;
 use App\Http\Middleware\AuditLogger;
 use App\Http\Middleware\PerAppRateLimit;
@@ -44,20 +45,30 @@ Route::prefix('v1')->group(function () {
             Route::get('employees/{employee}/logs', [AuditController::class, 'employeeLogs']);
             Route::get('applications/{application}/logs', [AuditController::class, 'applicationLogs']);
         });
+
+        Route::get('offices', [OfficeController::class, 'index']);
+        Route::get('offices/{office}', [OfficeController::class, 'show']);
     });
 
-    Route::prefix('sso')->middleware([ValidateAppCredentials::class, PerAppRateLimit::class])->group(function () {
-        Route::post('validate', [SsoController::class, 'validate'])
-            ->middleware(AuditLogger::class);
-        Route::post('authorize', [SsoController::class, 'authorize'])
-            ->middleware(AuditLogger::class);
+    Route::prefix('sso')->group(function () {
+        // Public endpoint - no app credentials needed (used by SSO-UI login page)
+        Route::post('validate-redirect', [SsoController::class, 'validateRedirect']);
 
-        Route::middleware('auth:api')->group(function () {
-            Route::get('employee', [SsoController::class, 'employee']);
+        Route::middleware([ValidateAppCredentials::class, PerAppRateLimit::class])->group(function () {
+            Route::post('validate', [SsoController::class, 'validate'])
+                ->middleware(AuditLogger::class);
+            Route::post('authorize', [SsoController::class, 'authorize'])
+                ->middleware(AuditLogger::class);
+
+            Route::middleware('auth:api')->group(function () {
+                Route::get('employee', [SsoController::class, 'employee']);
+            });
         });
     });
 
     Route::prefix('locations')->group(function () {
+        Route::get('regions', [LocationController::class, 'regions']);
+        Route::get('regions/{code}/provinces', [LocationController::class, 'provincesByRegion']);
         Route::get('provinces', [LocationController::class, 'provinces']);
         Route::get('provinces/{code}/cities', [LocationController::class, 'cities']);
         Route::get('cities/{code}/barangays', [LocationController::class, 'barangays']);

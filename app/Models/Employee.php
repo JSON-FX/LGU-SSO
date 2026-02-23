@@ -27,9 +27,10 @@ class Employee extends Authenticatable implements JWTSubject
         'suffix',
         'birthday',
         'civil_status',
-        'province_code',
-        'city_code',
-        'barangay_code',
+        'region',
+        'province',
+        'city',
+        'barangay',
         'residence',
         'block_number',
         'building_floor',
@@ -111,21 +112,6 @@ class Employee extends Authenticatable implements JWTSubject
 
             return implode(' ', $parts);
         });
-    }
-
-    public function province(): BelongsTo
-    {
-        return $this->belongsTo(Province::class, 'province_code', 'code');
-    }
-
-    public function city(): BelongsTo
-    {
-        return $this->belongsTo(City::class, 'city_code', 'code');
-    }
-
-    public function barangay(): BelongsTo
-    {
-        return $this->belongsTo(Barangay::class, 'barangay_code', 'code');
     }
 
     public function office(): BelongsTo
