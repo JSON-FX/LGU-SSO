@@ -51,13 +51,18 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::prefix('sso')->group(function () {
-        // Public endpoint - no app credentials needed (used by SSO-UI login page)
+        // Public endpoints - no app credentials needed (used by SSO-UI login page)
         Route::post('validate-redirect', [SsoController::class, 'validateRedirect']);
+        Route::get('session-check', [SsoController::class, 'sessionCheck']);
 
         Route::middleware([ValidateAppCredentials::class, PerAppRateLimit::class])->group(function () {
             Route::post('validate', [SsoController::class, 'validate'])
                 ->middleware(AuditLogger::class);
             Route::post('authorize', [SsoController::class, 'authorize'])
+                ->middleware(AuditLogger::class);
+            Route::get('check', [SsoController::class, 'check'])
+                ->middleware(AuditLogger::class);
+            Route::post('cookie-logout', [SsoController::class, 'cookieLogout'])
                 ->middleware(AuditLogger::class);
 
             Route::middleware('auth:api')->group(function () {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\EmployeeResource;
+use App\Http\Traits\SetsSsoCookie;
 use App\Models\AuditLog;
 use App\Models\Employee;
 use App\Models\OAuthToken;
@@ -14,6 +15,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
+    use SetsSsoCookie;
+
     public function login(LoginRequest $request): JsonResponse
     {
         $employee = Employee::query()
@@ -36,11 +39,13 @@ class AuthController extends Controller
 
         AuditLog::log('login', $employee);
 
-        return response()->json([
+        $response = response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
             'employee' => new EmployeeResource($employee),
         ]);
+
+        return $this->attachSsoCookie($response, $token);
     }
 
     public function logout(): JsonResponse
@@ -60,9 +65,11 @@ class AuthController extends Controller
 
         AuditLog::log('logout', $employee);
 
-        return response()->json([
+        $response = response()->json([
             'message' => 'Successfully logged out.',
         ]);
+
+        return $this->clearSsoCookie($response);
     }
 
     public function logoutAll(): JsonResponse
@@ -81,9 +88,11 @@ class AuthController extends Controller
 
         AuditLog::log('logout_all', $employee);
 
-        return response()->json([
+        $response = response()->json([
             'message' => 'Successfully logged out from all sessions.',
         ]);
+
+        return $this->clearSsoCookie($response);
     }
 
     public function refresh(): JsonResponse
@@ -108,10 +117,12 @@ class AuthController extends Controller
 
         AuditLog::log('token_refresh', $employee);
 
-        return response()->json([
+        $response = response()->json([
             'access_token' => $newToken,
             'token_type' => 'bearer',
         ]);
+
+        return $this->attachSsoCookie($response, $newToken);
     }
 
     public function me(): JsonResponse

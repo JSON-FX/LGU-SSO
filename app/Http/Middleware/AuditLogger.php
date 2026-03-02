@@ -73,6 +73,14 @@ class AuditLogger
             return 'app_authorize';
         }
 
+        if (str_contains($path, 'sso/check') && $method === 'GET') {
+            return 'sso_check';
+        }
+
+        if (str_contains($path, 'sso/cookie-logout') && $method === 'POST') {
+            return 'sso_logout';
+        }
+
         return null;
     }
 }
