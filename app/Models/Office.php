@@ -14,7 +14,16 @@ class Office extends Model
     protected $fillable = [
         'name',
         'abbreviation',
+        'type',
+        'is_active',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
 
     public function employees(): HasMany
     {
