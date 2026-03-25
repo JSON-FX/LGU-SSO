@@ -37,7 +37,9 @@ class Employee extends Authenticatable implements JWTSubject
         'house_number',
         'nationality',
         'email',
+        'username',
         'password',
+        'must_change_password',
         'is_active',
         'office_id',
         'position',
@@ -55,6 +57,7 @@ class Employee extends Authenticatable implements JWTSubject
             'birthday' => 'date',
             'civil_status' => CivilStatus::class,
             'is_active' => 'boolean',
+            'must_change_password' => 'boolean',
             'password' => 'hashed',
             'date_employed' => 'date',
             'date_terminated' => 'date',
@@ -146,6 +149,22 @@ class Employee extends Authenticatable implements JWTSubject
         $pivot = $this->applications()->where('application_id', $application->id)->first();
 
         return $pivot ? AppRole::from($pivot->pivot->role) : null;
+    }
+
+    public static function generateUsername(string $firstName, string $lastName): string
+    {
+        $firstInitial = strtolower(substr($firstName, 0, 1));
+        $normalizedLastName = strtolower(str_replace(' ', '', $lastName));
+        $baseUsername = "{$firstInitial}.{$normalizedLastName}";
+        $username = $baseUsername;
+        $counter = 1;
+
+        while (static::where('username', $username)->exists()) {
+            $counter++;
+            $username = "{$baseUsername}{$counter}";
+        }
+
+        return $username;
     }
 
     public function getRouteKeyName(): string
