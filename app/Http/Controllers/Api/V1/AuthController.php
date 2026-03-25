@@ -20,7 +20,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $employee = Employee::query()
-            ->where('email', $request->email)
+            ->where('username', $request->username)
             ->where('is_active', true)
             ->first();
 
