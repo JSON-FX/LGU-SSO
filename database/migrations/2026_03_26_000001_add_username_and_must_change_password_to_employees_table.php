@@ -10,8 +10,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->string('username')->unique()->after('email');
-            $table->boolean('must_change_password')->default(true)->after('password');
+            if (!Schema::hasColumn('employees', 'username')) {
+                $table->string('username')->unique()->after('email');
+            }
+            if (!Schema::hasColumn('employees', 'must_change_password')) {
+                $table->boolean('must_change_password')->default(true)->after('password');
+            }
         });
 
         // Generate usernames for existing employees
