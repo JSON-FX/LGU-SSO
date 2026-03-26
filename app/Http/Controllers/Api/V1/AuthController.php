@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\EmployeeResource;
 use App\Http\Traits\SetsSsoCookie;
 use App\Models\AuditLog;
@@ -46,6 +48,44 @@ class AuthController extends Controller
         ]);
 
         return $this->attachSsoCookie($response, $token);
+    }
+
+    public function register(RegisterRequest $request)
+    {
+        $username = Employee::generateUsername($request->first_name, $request->last_name);
+
+        // Default password: first initial + full last name (lowercased, no spaces)
+        $firstInitial = strtolower(substr($request->first_name, 0, 1));
+        $normalizedLastName = strtolower(str_replace(' ', '', $request->last_name));
+        $defaultPassword = $firstInitial . $normalizedLastName;
+
+        $employee = Employee::create([
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'username' => $username,
+            'email' => $username . '@lgu.gov.ph', // placeholder email
+            'password' => Hash::make($defaultPassword),
+            'must_change_password' => true,
+            'is_active' => true,
+            'birthday' => '2000-01-01', // default, user updates later
+            'civil_status' => 'single', // default
+            'nationality' => 'Filipino', // default
+            'residence' => '', // empty, user fills later
+        ]);
+
+        // Auto-grant guest role on all active applications
+        $applications = \App\Models\Application::where('is_active', true)->get();
+        foreach ($applications as $app) {
+            $employee->applications()->attach($app->id, [
+                'role' => \App\Enums\AppRole::Guest->value,
+            ]);
+        }
+
+        return response()->json([
+            'username' => $username,
+            'message' => 'Registration successful',
+        ], 201);
     }
 
     public function logout(): JsonResponse
@@ -132,6 +172,26 @@ class AuthController extends Controller
 
         return response()->json([
             'data' => new EmployeeResource($employee),
+        ]);
+    }
+
+    public function changePassword(ChangePasswordRequest $request): JsonResponse
+    {
+        $employee = auth()->user();
+
+        if (! Hash::check($request->current_password, $employee->password)) {
+            return response()->json([
+                'message' => 'Current password is incorrect.',
+            ], 422);
+        }
+
+        $employee->update([
+            'password' => Hash::make($request->new_password),
+            'must_change_password' => false,
+        ]);
+
+        return response()->json([
+            'message' => 'Password changed successfully.',
         ]);
     }
 }

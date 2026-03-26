@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\EmployeeController;
 use App\Http\Controllers\Api\V1\LocationController;
 use App\Http\Controllers\Api\V1\OfficeController;
+use App\Http\Controllers\Api\V1\PortalController;
 use App\Http\Controllers\Api\V1\SsoController;
 use App\Http\Middleware\AuditLogger;
 use App\Http\Middleware\PerAppRateLimit;
@@ -16,6 +17,7 @@ Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('login', [AuthController::class, 'login'])
             ->middleware(AuditLogger::class);
+        Route::post('register', [AuthController::class, 'register']);
 
         Route::middleware('auth:api')->group(function () {
             Route::post('logout', [AuthController::class, 'logout'])
@@ -25,6 +27,7 @@ Route::prefix('v1')->group(function () {
             Route::post('refresh', [AuthController::class, 'refresh'])
                 ->middleware(AuditLogger::class);
             Route::get('me', [AuthController::class, 'me']);
+            Route::post('change-password', [AuthController::class, 'changePassword']);
         });
     });
 
@@ -48,6 +51,11 @@ Route::prefix('v1')->group(function () {
 
         Route::get('offices', [OfficeController::class, 'index']);
         Route::get('offices/{office}', [OfficeController::class, 'show']);
+
+        // Portal (self-service)
+        Route::get('portal/profile', [PortalController::class, 'profile']);
+        Route::put('portal/profile', [PortalController::class, 'updateProfile']);
+        Route::get('portal/applications', [PortalController::class, 'applications']);
     });
 
     Route::prefix('sso')->group(function () {
