@@ -3,9 +3,11 @@ set -e
 
 echo "Starting LGU-SSO..."
 
-# Wait for MySQL to be ready
-echo "Waiting for MySQL..."
-until php -r "new PDO('mysql:host=' . getenv('DB_HOST') . ';port=' . (getenv('DB_PORT') ?: '3306'), getenv('DB_USERNAME'), getenv('DB_PASSWORD'));" 2>/dev/null; do
+# Wait for MySQL to be ready (use shell env vars from docker-compose, not .env file)
+MYSQL_HOST="${DB_HOST:-mysql}"
+MYSQL_PORT="${DB_PORT:-3306}"
+echo "Waiting for MySQL at ${MYSQL_HOST}:${MYSQL_PORT}..."
+until php -r "new PDO('mysql:host=${MYSQL_HOST};port=${MYSQL_PORT}', getenv('DB_USERNAME') ?: '${DB_USERNAME}', getenv('DB_PASSWORD') ?: '${DB_PASSWORD}');" 2>/dev/null; do
     echo "MySQL not ready, retrying in 2s..."
     sleep 2
 done
