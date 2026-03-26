@@ -43,7 +43,7 @@ class ApplicationSeeder extends Seeder
             'description' => 'LGU Chat messaging application',
             'client_id' => 'lguchat-client-28f6267b251e22159a55',
             'client_secret' => Hash::make('724c8d217e19b81711ea725904ea41d467df591d'),
-            'redirect_uris' => ['http://chat.lguquezon.local:8080/api/auth/sso/callback'],
+            'redirect_uris' => ['http://chat.local:8080/api/auth/sso/callback'],
             'rate_limit_per_minute' => 100,
         ]);
     }

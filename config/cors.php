@@ -24,7 +24,7 @@ return [
     ),
 
     'allowed_origins_patterns' => [
-        '#^https?://.*\.lguquezon\.local(:\d+)?$#',
+        '#^https?://.*\.local(:\d+)?$#',
     ],
 
     'allowed_headers' => ['*'],

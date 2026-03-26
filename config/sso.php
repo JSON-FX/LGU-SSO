@@ -19,11 +19,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | The domain for the SSO cookie. Use a leading dot to share across
-    | subdomains (e.g., ".lguquezon.local").
+    | subdomains (e.g., ".local").
     |
     */
 
-    'cookie_domain' => env('SSO_COOKIE_DOMAIN', '.lguquezon.local'),
+    'cookie_domain' => env('SSO_COOKIE_DOMAIN', '.local'),
 
     /*
     |--------------------------------------------------------------------------
