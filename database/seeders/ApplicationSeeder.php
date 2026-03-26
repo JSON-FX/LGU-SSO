@@ -11,6 +11,12 @@ class ApplicationSeeder extends Seeder
 {
     public function run(): void
     {
+        // Use CHAT_DOMAIN and OPTS_DOMAIN env vars so redirect URIs work in any environment
+        // Development: chat.local, opts.local
+        // Production: chat.lguquezon.local, opts.lguquezon.local
+        $chatDomain = env('CHAT_DOMAIN', 'chat.local');
+        $optsDomain = env('OPTS_DOMAIN', 'opts.local');
+
         Application::create([
             'name' => 'Admin App Management System',
             'description' => 'The frontend admin application for managing the SSO system',
@@ -43,7 +49,7 @@ class ApplicationSeeder extends Seeder
             'description' => 'LGU Chat messaging application',
             'client_id' => 'lguchat-client-28f6267b251e22159a55',
             'client_secret' => Hash::make('724c8d217e19b81711ea725904ea41d467df591d'),
-            'redirect_uris' => ['http://chat.local/api/auth/sso/callback'],
+            'redirect_uris' => ["http://{$chatDomain}/api/auth/sso/callback"],
             'rate_limit_per_minute' => 100,
         ]);
 
@@ -52,7 +58,7 @@ class ApplicationSeeder extends Seeder
             'description' => 'Online Performance Tracking System',
             'client_id' => 'opts-client-YDMPlxEfp6O0OYvp3zC9',
             'client_secret' => Hash::make('mebhjEFuxyLIU1bbmCXnmYoyOFsPOnvCdVt2N3xU'),
-            'redirect_uris' => ['http://opts.local/auth/sso/callback'],
+            'redirect_uris' => ["http://{$optsDomain}/auth/sso/callback"],
             'rate_limit_per_minute' => 100,
         ]);
     }
