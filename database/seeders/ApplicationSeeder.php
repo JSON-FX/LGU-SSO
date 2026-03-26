@@ -46,5 +46,14 @@ class ApplicationSeeder extends Seeder
             'redirect_uris' => ['http://chat.local/api/auth/sso/callback'],
             'rate_limit_per_minute' => 100,
         ]);
+
+        Application::create([
+            'name' => 'OPTS 2026',
+            'description' => 'Online Performance Tracking System',
+            'client_id' => 'opts-client-YDMPlxEfp6O0OYvp3zC9',
+            'client_secret' => Hash::make('mebhjEFuxyLIU1bbmCXnmYoyOFsPOnvCdVt2N3xU'),
+            'redirect_uris' => ['http://opts.local/auth/sso/callback'],
+            'rate_limit_per_minute' => 100,
+        ]);
     }
 }
