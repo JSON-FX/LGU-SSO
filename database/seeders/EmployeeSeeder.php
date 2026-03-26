@@ -16,6 +16,7 @@ class EmployeeSeeder extends Seeder
             'first_name' => 'Admin',
             'middle_name' => null,
             'last_name' => 'User',
+            'username' => Employee::generateUsername('Admin', 'User'),
             'birthday' => '1990-01-15',
             'civil_status' => CivilStatus::Single,
             'province' => 'Metro Manila',
@@ -25,6 +26,7 @@ class EmployeeSeeder extends Seeder
             'nationality' => 'Filipino',
             'email' => 'admin@lgu-sso.test',
             'password' => 'password',
+            'must_change_password' => false,
             'position' => 'System Administrator',
         ]);
 
@@ -33,6 +35,7 @@ class EmployeeSeeder extends Seeder
             'middle_name' => 'Cruz',
             'last_name' => 'Dela Cruz',
             'suffix' => 'Jr.',
+            'username' => Employee::generateUsername('Juan', 'Dela Cruz'),
             'birthday' => '1985-06-20',
             'civil_status' => CivilStatus::Married,
             'province' => 'Metro Manila',
@@ -42,6 +45,7 @@ class EmployeeSeeder extends Seeder
             'nationality' => 'Filipino',
             'email' => 'juan@lgu-sso.test',
             'password' => 'password',
+            'must_change_password' => false,
             'position' => 'Clerk',
         ]);
 
@@ -49,6 +53,7 @@ class EmployeeSeeder extends Seeder
             'first_name' => 'Maria',
             'middle_name' => 'Santos',
             'last_name' => 'Reyes',
+            'username' => Employee::generateUsername('Maria', 'Reyes'),
             'birthday' => '1992-03-10',
             'civil_status' => CivilStatus::Single,
             'province' => 'Cebu',
@@ -58,6 +63,7 @@ class EmployeeSeeder extends Seeder
             'nationality' => 'Filipino',
             'email' => 'maria@lgu-sso.test',
             'password' => 'password',
+            'must_change_password' => false,
             'position' => 'Administrative Officer',
         ]);
 
