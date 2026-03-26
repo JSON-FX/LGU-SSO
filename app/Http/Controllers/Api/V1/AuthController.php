@@ -64,14 +64,15 @@ class AuthController extends Controller
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'username' => $username,
-            'email' => $username . '@lgu.gov.ph', // placeholder email
+            'email' => $username . '@lgu.gov.ph',
             'password' => Hash::make($defaultPassword),
             'must_change_password' => true,
             'is_active' => true,
-            'birthday' => '2000-01-01', // default, user updates later
-            'civil_status' => 'single', // default
-            'nationality' => 'Filipino', // default
-            'residence' => '', // empty, user fills later
+            'birthday' => '2000-01-01',
+            'civil_status' => 'single',
+            'nationality' => 'Filipino',
+            'residence' => '',
+            'position' => '',
         ]);
 
         // Auto-grant guest role on all active applications
