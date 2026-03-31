@@ -261,6 +261,28 @@ class SsoController extends Controller
         }
     }
 
+    public function employees(): JsonResponse
+    {
+        $employees = Employee::with(['office', 'position'])->get();
+
+        $data = $employees->map(function (Employee $employee) {
+            return [
+                'uuid' => $employee->uuid,
+                'username' => $employee->username,
+                'email' => $employee->email,
+                'first_name' => $employee->first_name,
+                'middle_name' => $employee->middle_name,
+                'last_name' => $employee->last_name,
+                'full_name' => $employee->full_name,
+                'position' => $employee->position?->title,
+                'office_name' => $employee->office?->name,
+                'is_active' => $employee->is_active,
+            ];
+        });
+
+        return response()->json($data);
+    }
+
     public function cookieLogout(Request $request): JsonResponse
     {
         $cookieName = config('sso.cookie_name');

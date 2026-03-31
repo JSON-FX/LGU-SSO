@@ -72,6 +72,7 @@ Route::prefix('v1')->group(function () {
                 ->middleware(AuditLogger::class);
             Route::get('check', [SsoController::class, 'check'])
                 ->middleware(AuditLogger::class);
+            Route::get('employees', [SsoController::class, 'employees']);
             Route::post('cookie-logout', [SsoController::class, 'cookieLogout'])
                 ->middleware(AuditLogger::class);
 
