@@ -44,7 +44,7 @@ class SsoController extends Controller
             $application = $request->attributes->get('application');
             AuditLog::log('token_validate', $employee, $application);
 
-            $employee->load(['province', 'city', 'barangay']);
+            $employee->load(['office', 'position', 'applications']);
 
             return response()->json([
                 'valid' => true,
@@ -163,7 +163,7 @@ class SsoController extends Controller
             ], 403);
         }
 
-        $employee->load(['province', 'city', 'barangay']);
+        $employee->load(['office', 'position', 'applications']);
         $role = $application instanceof Application ? $employee->getRoleFor($application) : null;
 
         return response()->json([

@@ -89,10 +89,16 @@ class OfficeSeeder extends Seeder
         ];
 
         foreach ($offices as $office) {
-            Office::firstOrCreate(
-                ['abbreviation' => $office['abbreviation']],
-                $office
-            );
+            // Try to find by abbreviation first (handles renamed offices),
+            // then by name (handles offices with changed abbreviation)
+            $existing = Office::where('abbreviation', $office['abbreviation'])->first()
+                ?? Office::where('name', $office['name'])->first();
+
+            if ($existing) {
+                $existing->update($office);
+            } else {
+                Office::create($office);
+            }
         }
     }
 }
