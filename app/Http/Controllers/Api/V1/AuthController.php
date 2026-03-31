@@ -52,17 +52,22 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $username = Employee::generateUsername($request->first_name, $request->last_name);
+        // Normalize names to Title Case
+        $firstName = mb_convert_case($request->first_name, MB_CASE_TITLE, 'UTF-8');
+        $middleName = $request->middle_name ? mb_convert_case($request->middle_name, MB_CASE_TITLE, 'UTF-8') : null;
+        $lastName = mb_convert_case($request->last_name, MB_CASE_TITLE, 'UTF-8');
+
+        $username = Employee::generateUsername($firstName, $lastName);
 
         // Default password: first initial + full last name (lowercased, no spaces)
-        $firstInitial = strtolower(substr($request->first_name, 0, 1));
-        $normalizedLastName = strtolower(str_replace(' ', '', $request->last_name));
+        $firstInitial = strtolower(substr($firstName, 0, 1));
+        $normalizedLastName = strtolower(str_replace(' ', '', $lastName));
         $defaultPassword = $firstInitial . $normalizedLastName;
 
         $employee = Employee::create([
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'last_name' => $request->last_name,
+            'first_name' => $firstName,
+            'middle_name' => $middleName,
+            'last_name' => $lastName,
             'username' => $username,
             'email' => $username . '@lgu.gov.ph',
             'password' => Hash::make($defaultPassword),
