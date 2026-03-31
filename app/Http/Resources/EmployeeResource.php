@@ -34,7 +34,10 @@ class EmployeeResource extends JsonResource
             'is_active' => $this->is_active,
             'must_change_password' => $this->must_change_password,
             'office' => $this->whenLoaded('office', fn () => new OfficeResource($this->office)),
-            'position' => $this->position,
+            'position' => $this->whenLoaded('position', fn () => [
+                'id' => $this->position->id,
+                'title' => $this->position->title,
+            ]),
             'date_employed' => $this->date_employed?->format('Y-m-d'),
             'date_terminated' => $this->date_terminated?->format('Y-m-d'),
             'applications' => $this->whenLoaded('applications', fn () => $this->applications->map(fn ($app) => [

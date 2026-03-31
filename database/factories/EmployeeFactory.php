@@ -31,7 +31,7 @@ class EmployeeFactory extends Factory
             'must_change_password' => false,
             'is_active' => true,
             'office_id' => Office::factory(),
-            'position' => fake()->jobTitle(),
+            'position_id' => null,
             'date_employed' => $dateEmployed,
             'date_terminated' => null,
         ];

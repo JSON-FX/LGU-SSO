@@ -35,7 +35,7 @@ class StoreEmployeeRequest extends FormRequest
             'email' => ['required', 'email', 'unique:employees,email'],
             'password' => ['required', Password::defaults()],
             'office_id' => ['nullable', 'integer', 'exists:offices,id'],
-            'position' => ['required', 'string', 'max:255'],
+            'position_id' => ['nullable', 'integer', 'exists:positions,id'],
             'date_employed' => ['nullable', 'date'],
             'date_terminated' => ['nullable', 'date', 'after_or_equal:date_employed'],
         ];

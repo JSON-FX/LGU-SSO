@@ -17,7 +17,7 @@ class EmployeeController extends Controller
     public function index(): AnonymousResourceCollection
     {
         $employees = Employee::query()
-            ->with(['office'])
+            ->with(['office', 'position'])
             ->paginate(15);
 
         return EmployeeResource::collection($employees);
@@ -35,7 +35,7 @@ class EmployeeController extends Controller
 
     public function show(Employee $employee): JsonResponse
     {
-        $employee->load(['office', 'applications']);
+        $employee->load(['office', 'position', 'applications']);
 
         return response()->json([
             'data' => new EmployeeResource($employee),

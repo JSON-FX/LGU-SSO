@@ -72,7 +72,7 @@ class AuthController extends Controller
             'civil_status' => 'single',
             'nationality' => 'Filipino',
             'residence' => '',
-            'position' => '',
+            'position_id' => null,
         ]);
 
         // Auto-grant guest role on all active applications

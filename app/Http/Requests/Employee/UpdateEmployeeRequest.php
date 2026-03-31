@@ -38,7 +38,7 @@ class UpdateEmployeeRequest extends FormRequest
             'password' => ['sometimes', Password::defaults()],
             'is_active' => ['sometimes', 'boolean'],
             'office_id' => ['nullable', 'integer', 'exists:offices,id'],
-            'position' => ['sometimes', 'string', 'max:255'],
+            'position_id' => ['sometimes', 'nullable', 'integer', 'exists:positions,id'],
             'date_employed' => ['nullable', 'date'],
             'date_terminated' => ['nullable', 'date', 'after_or_equal:date_employed'],
         ];

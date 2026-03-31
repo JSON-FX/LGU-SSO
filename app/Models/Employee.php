@@ -42,7 +42,7 @@ class Employee extends Authenticatable implements JWTSubject
         'must_change_password',
         'is_active',
         'office_id',
-        'position',
+        'position_id',
         'date_employed',
         'date_terminated',
     ];
@@ -120,6 +120,11 @@ class Employee extends Authenticatable implements JWTSubject
     public function office(): BelongsTo
     {
         return $this->belongsTo(Office::class);
+    }
+
+    public function position(): BelongsTo
+    {
+        return $this->belongsTo(Position::class);
     }
 
     public function applications(): BelongsToMany

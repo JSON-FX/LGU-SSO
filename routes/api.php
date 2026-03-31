@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\EmployeeController;
 use App\Http\Controllers\Api\V1\LocationController;
 use App\Http\Controllers\Api\V1\OfficeController;
+use App\Http\Controllers\Api\V1\PositionController;
 use App\Http\Controllers\Api\V1\PortalController;
 use App\Http\Controllers\Api\V1\SsoController;
 use App\Http\Middleware\AuditLogger;
@@ -51,6 +52,7 @@ Route::prefix('v1')->group(function () {
 
         Route::get('offices', [OfficeController::class, 'index']);
         Route::get('offices/{office}', [OfficeController::class, 'show']);
+        Route::get('positions', [PositionController::class, 'index']);
 
         // Portal (self-service)
         Route::get('portal/profile', [PortalController::class, 'profile']);

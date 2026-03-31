@@ -3,6 +3,7 @@
 use App\Enums\AppRole;
 use App\Models\Application;
 use App\Models\Employee;
+use App\Models\Position;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -22,6 +23,8 @@ it('can list employees', function () {
 });
 
 it('can create an employee', function () {
+    $position = Position::create(['title' => 'Software Developer']);
+
     $response = $this->actingAs($this->admin, 'api')
         ->postJson('/api/v1/employees', [
             'first_name' => 'John',
@@ -32,13 +35,12 @@ it('can create an employee', function () {
             'nationality' => 'Filipino',
             'email' => 'john.doe@example.com',
             'password' => 'Password123!',
-            'position' => 'Software Developer',
+            'position_id' => $position->id,
         ]);
 
     $response->assertCreated()
         ->assertJsonPath('data.first_name', 'John')
-        ->assertJsonPath('data.email', 'john.doe@example.com')
-        ->assertJsonPath('data.position', 'Software Developer');
+        ->assertJsonPath('data.email', 'john.doe@example.com');
 });
 
 it('can show an employee', function () {

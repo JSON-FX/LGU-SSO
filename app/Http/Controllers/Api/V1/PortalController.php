@@ -14,7 +14,7 @@ class PortalController extends Controller
     public function profile()
     {
         $employee = auth()->user();
-        $employee->load(['office', 'applications']);
+        $employee->load(['office', 'position', 'applications']);
 
         return new EmployeeResource($employee);
     }
@@ -40,11 +40,14 @@ class PortalController extends Controller
             'province' => ['sometimes', 'nullable', 'string', 'max:255'],
             'city' => ['sometimes', 'nullable', 'string', 'max:255'],
             'barangay' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'position' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'suffix' => ['sometimes', 'nullable', 'string', 'max:50'],
+            'office_id' => ['sometimes', 'nullable', 'integer', 'exists:offices,id'],
+            'position_id' => ['sometimes', 'nullable', 'integer', 'exists:positions,id'],
+            'date_employed' => ['sometimes', 'nullable', 'date'],
         ]);
 
         $employee->update($validated);
-        $employee->load(['office', 'applications']);
+        $employee->load(['office', 'position', 'applications']);
 
         return new EmployeeResource($employee);
     }
